@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="author" content="Front-end desenvolvido por Bruna Seifert © 2025" />
+  <title>Avaliação da Clnica - ISMD</title>
+  <style>
+    body {
+      font-family: made-tommy Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      background-color: #114739;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .logo-bg {
+      background-image: url('img/Logo horizontal branco.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 400px;
+      height: 150px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      width: 90vw;
+      max-width: 530px;
+      border-radius: 12px;
+      padding: 35px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      text-align: left;
+    }
+
+    .required-asterisk {
+      color: red;
+      margin-left: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background-color: #114739;
+      color: white;
+      font-size: 16px;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0d362e;
+    }
+
+    h2 {
+      color: #114739;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="logo-bg"></div>
+
+<div class="card">
+  <h2>Início da Avaliação Clínica 1º Andar</h2>
+
+  <form id="startForm">
+    <label for="data">Data:<span class="required-asterisk">*</span></label>
+    <input type="date" id="data" name="data" required readonly>
+
+    <label for="hora">Hora:<span class="required-asterisk">*</span></label>
+    <input type="time" id="hora" name="hora" required readonly>
+
+    <button type="submit">Avaliar</button>
+  </form>
+</div>
+
+<script>
+  // Preenche automaticamente data e hora atual
+  window.addEventListener('DOMContentLoaded', function() {
+    const dataInput = document.getElementById('data');
+    const horaInput = document.getElementById('hora');
+    const now = new Date();
+
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    dataInput.value = `${yyyy}-${mm}-${dd}`;
+
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    horaInput.value = `${hh}:${min}`;
+  });
+
+  // Redireciona para avaliação 
+  document.getElementById('startForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const data = document.getElementById('data').value;
+    const hora = document.getElementById('hora').value;
+
+    const params = new URLSearchParams({
+      data: data,
+      hora: hora,
+    });
+
+    window.location.href = 'avaliacao.html?' + params.toString();
+  });
+</script>
+
+</body>
+</html>

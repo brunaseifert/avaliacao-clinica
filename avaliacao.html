@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="author" content="Front-end desenvolvido por Bruna Seifert © 2025" />
+  <title>Avaliação da Clínica - ISMD</title>
+  <style>
+    body {
+      font-family: made-tommy Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      background-color: #114739;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .logo-bg {
+      background-image: url('img/Logo horizontal branco.png'); 
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 300px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      width: 90vw; 
+      max-width: 600px;
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #114739;
+      font-size: 24px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .id_Paciente {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .carinhas {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-start; 
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    .carinhas input[type="radio"] {
+      display: none;
+    }
+
+    .carinhas label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icone-carinha {
+      width: 60px;  
+      height: 60px;
+      transition: transform 0.2s ease;
+      pointer-events: none;
+    }
+
+    input[type="radio"]:checked + label .icone-carinha {
+      transform: scale(1.2);
+    }
+
+    .carinhas label:hover .icone-carinha {
+      transform: scale(1.1);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: flex-end; 
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      background-color: #114739;
+      color: white;
+    }
+
+    .motivos-container {
+      margin-top: 10px;
+    }
+
+    .motivos-opcoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .motivo-balao {
+      background-color: #e6f2ef;
+      border: 1px solid #114739;
+      color: #114739;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .motivo-balao.selected {
+      background-color: #114739;
+      color: white;
+    }
+
+    #ouvidoriaInfo {
+      margin-top: 14px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div class="logo-bg"></div>
+
+<div class="card">
+  <h2>Avaliação da Clínica - ISMD</h2>
+
+  <div class="id_Paciente">
+    <p><strong>Data:</strong> <span id="data_span"></span></p>
+    <p><strong>Hora:</strong> <span id="hora_span"></span></p>
+  </div>
+
+  <form id="avaliacaoForm">
+    <div class="criterion">
+      <label class="criterion-title"><strong>Como você avalia nosso atendimento?</strong><span style="color: red;"> *</span></label>
+      <div class="carinhas">
+        <input type="radio" name="avaliacao" id="avaliacao_ruim" value="ruim" />
+        <label for="avaliacao_ruim" title="Ruim">
+          <img src="img/Bravo.png" alt="Ruim" class="icone-carinha" />
+        </label>
+
+        <input type="radio" name="avaliacao" id="avaliacao_neutro" value="neutro" />
+        <label for="avaliacao_neutro" title="Neutro">
+          <img src="img/neutro.png" alt="Neutro" class="icone-carinha" />
+        </label>
+
+        <input type="radio" name="avaliacao" id="avaliacao_bom" value="bom" />
+        <label for="avaliacao_bom" title="Bom">
+          <img src="img/bom.png" alt="Bom" class="icone-carinha" />
+        </label>
+
+        <input type="radio" name="avaliacao" id="avaliacao_otimo" value="otimo" />
+        <label for="avaliacao_otimo" title="Ótimo">
+          <img src="img/feliz.png" alt="Ótimo" class="icone-carinha" />
+        </label>
+      </div>
+    </div>
+
+    <div id="motivosContainer" class="motivos-container" style="display: none;">
+      <label><strong>O que motivou sua avaliação?</strong></label>
+      <div id="motivosOpcoes" class="motivos-opcoes"></div>
+    </div>
+
+    <div class="buttons">
+      <button type="submit">Enviar</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const data = params.get("data") || "Não informado";
+  const hora = params.get("hora") || "Não informado";
+
+  document.getElementById("data_span").innerText = data;
+  document.getElementById("hora_span").innerText = hora;
+
+  const motivosPorAvaliacao = {
+    ruim: ["Demora no atendimento", "Falta de cordialidade", "Não resolveram meu problema"],
+    neutro: ["Explicações confusas", "Poderia melhorar", "Esperava mais"],
+    bom: ["Bom atendimento", "Rapidez", "Satisfatório"],
+    otimo: ["Excelente atendimento", "Ótima estrutura", "Atenderam minhas necessidades"],
+  };
+
+  const motivosContainer = document.getElementById("motivosContainer");
+  const motivosOpcoes = document.getElementById("motivosOpcoes");
+
+  const radios = document.querySelectorAll('input[name="avaliacao"]');
+
+  radios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      const valor = radio.value;
+      const motivos = motivosPorAvaliacao[valor];
+
+      motivosOpcoes.innerHTML = "";
+      const ouvidoriaExistente = document.getElementById("ouvidoriaInfo");
+      if (ouvidoriaExistente) ouvidoriaExistente.remove();
+
+      if (motivos && motivos.length > 0) {
+        motivosContainer.style.display = "block";
+
+        motivos.forEach((motivo) => {
+          const span = document.createElement("span");
+          span.className = "motivo-balao";
+          span.innerText = motivo;
+
+          span.addEventListener("click", () => {
+            span.classList.toggle("selected");
+
+            if (motivo === "Não resolveram meu problema") {
+              if (!document.getElementById("ouvidoriaInfo")) {
+                const ouvidoria = document.createElement("div");
+                ouvidoria.id = "ouvidoriaInfo";
+                ouvidoria.innerText = "Ouvidoria - 1194534-1874";
+                motivosContainer.appendChild(ouvidoria);
+              }
+            }
+          });
+
+          motivosOpcoes.appendChild(span);
+        });
+      } else {
+        motivosContainer.style.display = "none";
+      }
+    });
+  });
+
+  document.getElementById("avaliacaoForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const avaliacaoSelecionada = document.querySelector('input[name="avaliacao"]:checked');
+
+    if (!avaliacaoSelecionada) {
+      alert("Por favor, selecione uma opção de avaliação!");
+      return;
+    }
+
+    const motivosSelecionados = Array.from(document.querySelectorAll(".motivo-balao.selected")).map(el => el.innerText);
+
+    const dados = {
+      data: data,
+      hora: hora,
+      avaliacao: avaliacaoSelecionada.value,
+      motivos: motivosSelecionados.join(", "),
+      params: Object.fromEntries(params.entries())
+    };
+
+    fetch('arquivo.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados) 
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert(data.message);
+      } else {
+        alert("Erro: " + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Erro na requisição:', error);
+      alert('Ocorreu um erro ao conectar com o servidor.');
+    });
+
+    window.location.href = "feedback.html";
+  });
+</script>
+
+</body>
+</html>
