@@ -224,7 +224,7 @@
           span.addEventListener("click", () => {
             span.classList.toggle("selected");
 
-            if (motivo === "Não resolveram meu problema") {
+            if (span.classList.contains("selected")) {
               if (!document.getElementById("ouvidoriaInfo")) {
                 const ouvidoria = document.createElement("div");
                 ouvidoria.id = "ouvidoriaInfo";
