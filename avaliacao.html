@@ -211,8 +211,7 @@
       const motivos = motivosPorAvaliacao[valor];
 
       motivosOpcoes.innerHTML = "";
-      const ouvidoriaExistente = document.getElementById("ouvidoriaInfo");
-      if (ouvidoriaExistente) ouvidoriaExistente.remove();
+
 
       if (motivos && motivos.length > 0) {
         motivosContainer.style.display = "block";
@@ -224,15 +223,6 @@
 
           span.addEventListener("click", () => {
             span.classList.toggle("selected");
-
-            if (span.classList.contains("selected")) {
-              if (!document.getElementById("ouvidoriaInfo")) {
-                const ouvidoria = document.createElement("div");
-                ouvidoria.id = "ouvidoriaInfo";
-                ouvidoria.innerText = "Ouvidoria - 1194534-1874";
-                motivosContainer.appendChild(ouvidoria);
-              }
-            }
           });
 
           motivosOpcoes.appendChild(span);
